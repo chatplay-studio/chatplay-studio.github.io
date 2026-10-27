@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat Alchemy – Encyclopedia</title>
+<meta name="description" content="All the elements discovered by the chat in Chat Alchemy, the live game on YouTube: how to play, recipes, element of the day and best alchemists.">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .top { display: flex; gap: 16px; align-items: center; margin-top: 18px; }
+  .top img { width: 72px; height: 72px; border-radius: 50%; }
+  .top h1 { margin: 0; font-size: clamp(28px, 7vw, 42px); }
+  .top > div { min-width: 0; }
+  main { overflow-wrap: anywhere; }
+  .lang { display: flex; gap: 6px; }
+  .lang button { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 99px; border: 0; background: var(--card); color: var(--muted); cursor: pointer; }
+  .lang button.on { background: var(--accent2); color: #fff; }
+  .live { display: inline-block; margin: 14px 0 4px; padding: 12px 20px; border-radius: 99px; background: linear-gradient(90deg, #7c5cff, #ff2d8a); color: #fff !important; font-weight: 800; text-decoration: none; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0; }
+  .steps .card { text-align: center; }
+  .steps .big { font-size: 40px; line-height: 1.2; }
+  .stat { font-size: 15px; color: var(--muted); }
+  .stat b { color: var(--text); font-size: 22px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--card); border-radius: 99px; padding: 8px 14px; box-shadow: inset 0 0 0 1px #24243a; font-weight: 700; }
+  .chip small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .recipe { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 12px 14px; border-bottom: 1px solid #1e1e30; }
+  .recipe .eq { font-weight: 700; }
+  .recipe .res { font-weight: 900; }
+  .recipe .by { margin-left: auto; color: #ffd84d; font-size: 14px; }
+  .recipe.myth .res { color: #ffd84d; }
+  .list { background: var(--card); border-radius: 18px; box-shadow: inset 0 0 0 1px #24243a; overflow: hidden; }
+  input.search { width: 100%; font: inherit; font-size: 16px; padding: 12px 16px; border-radius: 14px; border: 1px solid #2a2a40; background: #10101a; color: var(--text); margin: 6px 0 12px; }
+  .teasers { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .teasers .card { text-align: center; font-size: 22px; font-weight: 800; padding: 14px; }
+  .rank { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #1e1e30; }
+  .daily { font-size: 22px; font-weight: 900; }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="../index.html">ChatPlay Studio</a>
+  <div class="lang"><button data-l="en">EN</button><button data-l="fr">FR</button></div>
+</header>
+<main>
+  <div class="top">
+    <img src="../img/alchemy-logo.png" alt="">
+    <div>
+      <h1 data-t="title"></h1>
+      <div class="stat" id="stat"></div>
+    </div>
+  </div>
+  <a class="live" href="https://www.youtube.com/@ChatAlchemy" data-t="watch"></a>
+
+  <h2 data-t="howTitle"></h2>
+  <div class="steps">
+    <div class="card"><div class="big">⌨️</div><div data-t="how1"></div></div>
+    <div class="card"><div class="big">⬇️⚗️</div><div data-t="how2"></div></div>
+    <div class="card"><div class="big">🔥 + 💧 = ♨️</div><div data-t="how3"></div></div>
+  </div>
+
+  <h2 data-t="startTitle"></h2>
+  <p class="muted" data-t="startText"></p>
+  <div class="chips" id="start"></div>
+
+  <h2 data-t="dailyTitle"></h2>
+  <div class="card" id="daily"></div>
+
+  <h2 data-t="teaseTitle"></h2>
+  <p class="muted" data-t="teaseText"></p>
+  <div class="teasers" id="teasers"></div>
+
+  <h2 data-t="foundTitle"></h2>
+  <input class="search" id="search" type="search" autocomplete="off">
+  <div class="list" id="found"></div>
+
+  <h2 data-t="topTitle"></h2>
+  <div class="list" id="top"></div>
+
+  <p class="note" data-t="privacy"></p>
+</main>
+<footer>
+  <a href="../privacy.html">Privacy Policy</a><a href="../terms.html">Terms of Service</a><a href="mailto:studio.chatplay@gmail.com">studio.chatplay@gmail.com</a>
+  <p>ChatPlay Studio uses YouTube API Services. YouTube is a trademark of Google LLC; ChatPlay Studio is not affiliated with or endorsed by YouTube.</p>
+</footer>
+<script>
+// Encyclopédie publique : tout vient de data.json, publié une fois par jour par le serveur du jeu.
+const T = {
+  en: {
+    title: 'Chat Alchemy Encyclopedia', watch: '▶ Play now on the live',
+    howTitle: 'How to play', how1: 'Type an element in the live chat: <b>fire</b>, <b>water</b>, <b>dragon</b>…',
+    how2: 'It falls into the jar with your name on it.', how3: 'Two elements that touch <b>fuse</b> into a new one!',
+    startTitle: 'Elements you can type from the start', startText: 'Type one of these words (in English or French) in the chat. Every element discovered below can be typed too.',
+    dailyTitle: '⭐ Element of the day', dailyFound: 'Found by', dailyTodo: 'Not found yet today: be the first! (+3 points)',
+    teaseTitle: '🔮 Secret recipes you can make right now', teaseText: 'Nobody has found these yet. We show one ingredient: find the other one in the live!',
+    foundTitle: '📖 Discovered by the chat', search: 'Search an element…', typed: 'typed in the chat',
+    topTitle: '🏆 Best alchemists', none: 'Nothing yet: be the first!',
+    stat: (k, s, d) => `<b>${k}</b> elements discovered · ${s} secrets left in the book · updated ${d}`,
+    privacy: 'Names are the public YouTube display names of the players who made the discovery. A name disappears from this page after <b>30 days without playing</b>. Titles: 🧪 apprentice · ⚗️ alchemist · 🔮 master · 👑 best alchemist. More in our <a href="../privacy.html">Privacy Policy</a>.',
+  },
+  fr: {
+    title: 'Encyclopédie de Chat Alchemy', watch: '▶ Jouer maintenant sur le live',
+    howTitle: 'Comment jouer', how1: 'Écris un élément dans le chat du live : <b>feu</b>, <b>eau</b>, <b>dragon</b>…',
+    how2: 'Il tombe dans le bocal avec ton pseudo.', how3: 'Deux éléments qui se touchent <b>fusionnent</b> en un nouveau !',
+    startTitle: 'Les éléments à écrire dès le départ', startText: 'Écris un de ces mots (en français ou en anglais) dans le chat. Tous les éléments découverts plus bas peuvent aussi être écrits.',
+    dailyTitle: '⭐ Élément du jour', dailyFound: 'Trouvé par', dailyTodo: 'Pas encore trouvé aujourd’hui : sois le premier ! (+3 points)',
+    teaseTitle: '🔮 Recettes secrètes à faire dès maintenant', teaseText: 'Personne ne les a encore trouvées. On te montre un ingrédient : trouve l’autre sur le live !',
+    foundTitle: '📖 Découvert par le chat', search: 'Chercher un élément…', typed: 'écrit dans le chat',
+    topTitle: '🏆 Meilleurs alchimistes', none: 'Rien pour l’instant : sois le premier !',
+    stat: (k, s, d) => `<b>${k}</b> éléments découverts · ${s} secrets restants dans le livre · mis à jour le ${d}`,
+    privacy: 'Les noms sont les pseudos YouTube publics des joueurs qui ont fait la découverte. Un pseudo disparaît de cette page après <b>30 jours sans jouer</b>. Titres : 🧪 apprenti · ⚗️ alchimiste · 🔮 maître · 👑 meilleur alchimiste. Plus de détails dans notre <a href="../privacy.html">politique de confidentialité</a>.',
+  },
+};
+const asked = new URLSearchParams(location.search).get('lang');
+let lang = asked === 'fr' || asked === 'en' ? asked : (navigator.language || '').startsWith('fr') ? 'fr' : 'en';
+let data = null;
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const name = (c) => esc(lang === 'fr' ? c.fr : c.en);
+const el = (c) => `${c.e} ${name(c)}`;
+const $ = (id) => document.getElementById(id);
+
+function render() {
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  for (const b of document.querySelectorAll('.lang button')) b.classList.toggle('on', b.dataset.l === lang);
+  for (const n of document.querySelectorAll('[data-t]')) n.innerHTML = t[n.dataset.t];
+  $('search').placeholder = t.search;
+  if (!data) return;
+  const date = new Date(data.updated).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long' });
+  $('stat').innerHTML = t.stat(data.known, data.secretsLeft, date);
+  $('start').innerHTML = data.start.map((c) => `<span class="chip">${c.e} ${esc(lang === 'fr' ? c.fr : c.en)}<small>${esc(lang === 'fr' ? c.en : c.fr)}</small></span>`).join('');
+  $('daily').innerHTML = data.daily
+    ? `<div class="daily">${el(data.daily)}</div><div class="muted">${data.daily.found ? `${t.dailyFound} ${data.daily.by.map(esc).join(' & ') || '✅'}` : t.dailyTodo}</div>`
+    : `<span class="muted">${t.none}</span>`;
+  $('teasers').innerHTML = data.teasers.length
+    ? data.teasers.map((x) => `<div class="card">${x.hint.e} + ❓<br>= ❓</div>`).join('')
+    : `<span class="muted">${t.none}</span>`;
+  const q = $('search').value.trim().toLowerCase();
+  const rows = data.discovered.filter((d) => !q || [d.en, d.fr, ...d.how.flat().flatMap((c) => [c.en, c.fr])].some((s) => s.toLowerCase().includes(q)));
+  $('found').innerHTML = rows.map((d) => `<div class="recipe${d.m ? ' myth' : ''}">
+      <span class="eq">${d.how.length ? d.how.map(([a, b]) => `${el(a)} + ${el(b)}`).join(' · ') : `✨ ${t.typed}`}</span>
+      <span>=</span><span class="res">${el(d)}</span>
+      <span class="by">${d.by.map(esc).join(' & ')}</span></div>`).join('') || `<div class="recipe muted">${t.none}</div>`;
+  $('top').innerHTML = data.top.map((p, i) => `<div class="rank"><span>${['🥇', '🥈', '🥉'][i] ?? i + 1 + '.'} ${esc(p.name)}</span><b>${p.score}</b></div>`).join('')
+    || `<div class="rank muted">${t.none}</div>`;
+}
+
+for (const b of document.querySelectorAll('.lang button')) b.onclick = () => { lang = b.dataset.l; render(); };
+$('search').oninput = render;
+render();
+fetch('data.json', { cache: 'no-store' }).then((r) => r.json()).then((d) => { data = d; render(); }).catch(() => {});
+</script>
+</body>
+</html>
